@@ -1,0 +1,6 @@
+PyQt5
+numpy
+pandas
+scikit-learn
+yfinance
+ta-lib
