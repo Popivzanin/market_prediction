@@ -1,0 +1,102 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QLineEdit, QMessageBox, QCheckBox
+import pandas as pd
+import yfinance as yf
+import pickle as pkl
+from datetime import datetime, date, timedelta
+from preprocessing import preprocess
+import sklearn
+
+
+app = QApplication(sys.argv)
+
+
+class MainWindow(QMainWindow):
+	def __init__(self):
+		super().__init__()
+	
+		self.setWindowTitle("Stock trend prediction")
+		self.resize(1000,1000)
+		
+		self.button = QPushButton("Predict", self)
+		self.button.resize(50,50)
+		self.button.move(200,200)
+		self.button.clicked.connect(self.predict)
+
+		self.labelRandomForest = QLabel("Random forest prediction", self)
+		self.labelRandomForest.resize(200,200)
+		self.labelRandomForestPrediction = QLabel("No prediction yet", self)
+		self.labelRandomForestPrediction.resize(300,100)
+		
+		self.labelIchimoku = QLabel("Ichimoku prediction", self)	
+		self.labelIchimoku.move(500,500)
+		self.labelIchimokuPrediction = QLabel("No Ichimoku prediction yet", self)
+		self.labelIchimokuPrediction.move(600,600)		
+
+		self.inputCsv = QLineEdit(self)
+		self.inputCsv.setPlaceholderText("Enter data path")
+		self.inputCsv.move(400,400)
+		self.inputCsv.resize(200,20)
+		self.inputCsv.hide()
+		
+		self.checkBoxCsv = QCheckBox(self)
+		self.checkBoxCsv.stateChanged.connect(self.check)	
+
+	def predict(self):		
+		df = None
+		if(self.checkBoxCsv.isChecked()):	
+			csv = self.inputCsv.text()
+			try:
+				df = pd.read_csv(csv)
+			except:
+				msg = QMessageBox()
+				msg.setWindowTitle("Error")
+				msg.setText("Enter correct path")
+				msg.exec_()
+				return
+		else:
+			
+			df = yf.download("GC=F", (datetime.today() - timedelta(days=40)).strftime("%Y-%m-%d"), end = pd.Timestamp.today().strftime("%Y-%m-%d"))
+			df.to_csv('current_data.csv')	
+
+		self.ichimoku(df)
+
+		self.randomforest(df)		
+		
+	def check(self):
+		if(self.checkBoxCsv.isChecked()):
+			self.inputCsv.show()
+		else:
+			self.inputCsv.hide()
+
+
+	def ichimoku(self, df):
+		pass
+
+	def randomforest(self, df):
+		df = preprocess(df)
+	#	try:
+	#		df = preprocess(df)
+	#	except:	
+	#		msg = QMessageBox()
+	#		msg.setWindowTitle("Error")
+	#		msg.setText("Data is incorrect")
+	#		msg.exec_()
+	#		return
+	#	model = None
+
+		try:
+			model = pkl.load(open('./models/model.pkl', 'rb'))
+		except:	
+			msg = QMessageBox()
+			msg.setWindowTitle("Error")
+			msg.setText("Model is not loaded")
+			msg.exec_()
+			return
+		
+		model.predict(df.tail())
+
+window = MainWindow()
+window.show()
+
+app.exec()
