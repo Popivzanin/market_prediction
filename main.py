@@ -17,7 +17,8 @@ class MainWindow(QMainWindow):
 		
 		layout = QVBoxLayout()
 		layoutForest = QHBoxLayout()
-		layoutIchimoku = QHBoxLayout()
+		layoutIchimoku1 = QHBoxLayout()
+		layoutIchimoku2 = QHBoxLayout()
 		pagelayout = QVBoxLayout()
 		lower_layout = QHBoxLayout()
 		self.setWindowTitle("Gold trend prediction")
@@ -34,24 +35,33 @@ class MainWindow(QMainWindow):
 		self.labelRandomForestPrediction = QLabel("No prediction yet", self)
 		self.labelRandomForestPrediction.setStyleSheet("color: blue;font-weight: bold; font-size: 18pt;")	
 
-		self.labelIchimoku = QLabel("Ichimoku prediction:", self)	
-		self.labelIchimoku.setStyleSheet("color: black;font-weight: bold; font-size: 18pt;")	
-		self.labelIchimokuPrediction = QLabel("No prediction yet", self)
-		self.labelIchimokuPrediction.setStyleSheet("color: blue;font-weight: bold; font-size: 18pt;")	
+		self.labelIchimoku1 = QLabel("Ichimoku prediction:", self)	
+		self.labelIchimoku1.setStyleSheet("color: black;font-weight: bold; font-size: 18pt;")	
+		self.labelIchimokuPrediction1 = QLabel("No prediction yet", self)
+		self.labelIchimokuPrediction1.setStyleSheet("color: blue;font-weight: bold; font-size: 18pt;")	
 		#self.labelCsv = QLabel("Use CSV", self)
 		#self.inputCsv = QLineEdit()
 		#self.inputCsv.setPlaceholderText("Enter data path")
 		#self.inputCsv.hide()
+
+
+		self.labelIchimoku2 = QLabel("Ichimoku prediction:", self)	
+		self.labelIchimoku2.setStyleSheet("color: black;font-weight: bold; font-size: 18pt;")	
+		self.labelIchimokuPrediction2 = QLabel("No prediction yet", self)
+		self.labelIchimokuPrediction2.setStyleSheet("color: blue;font-weight: bold; font-size: 18pt;")	
 		
 		#self.checkBoxCsv = QCheckBox(self)
 		#self.checkBoxCsv.stateChanged.connect(self.check)
 		
 		layoutForest.addWidget(self.labelRandomForest)
 		layoutForest.addWidget(self.labelRandomForestPrediction)
-		layoutIchimoku.addWidget(self.labelIchimoku)
-		layoutIchimoku.addWidget(self.labelIchimokuPrediction)
+		layoutIchimoku1.addWidget(self.labelIchimoku1)
+		layoutIchimoku1.addWidget(self.labelIchimokuPrediction1)
+		layoutIchimoku2.addWidget(self.labelIchimoku2)
+		layoutIchimoku2.addWidget(self.labelIchimokuPrediction2)
 		layout.addLayout(layoutForest)
-		layout.addLayout(layoutIchimoku)
+		layout.addLayout(layoutIchimoku1)
+		layout.addLayout(layoutIchimoku2)
 		lower_layout.addWidget(self.button)
 		#lower_layout.addWidget(self.labelCsv)
 		#lower_layout.addWidget(self.checkBoxCsv)
@@ -84,7 +94,8 @@ class MainWindow(QMainWindow):
 		df = yf.download("GC=F", start=(datetime.today() - timedelta(days=200)).strftime("%Y-%m-%d"), end = pd.Timestamp.today().strftime("%Y-%m-%d"))
 		df.to_csv('./data/current_data.csv')	
 
-		self.ichimoku(df)
+		self.ichimoku_1(df)
+		self.ichimoku_2(df)
 
 		self.randomforest(df)		
 		
@@ -95,9 +106,14 @@ class MainWindow(QMainWindow):
 	#		self.inputCsv.hide()
 
 
-	def ichimoku(self, df):
-		
+	def ichimoku_1(self, df):
+		self.labelIchimokuPrediction1.setText('Growing')
+		self.labelIchimokuPrediction1.setStyleSheet('color: green;font-weight: bold; font-size: 18pt')
 		return	
+	
+	def ichimoku_2(self, df):
+		self.labelIchimokuPrediction2.setText('Growing')
+		self.labelIchimokuPrediction2.setStyleSheet('color: green;font-weight: bold; font-size: 18pt')
 
 	def randomforest(self, df):
 		#try:
