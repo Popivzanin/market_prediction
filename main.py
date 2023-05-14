@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
 		#		return
 		#else:	
 		df = yf.download("GC=F", start=(datetime.today() - timedelta(days=200)).strftime("%Y-%m-%d"), end = pd.Timestamp.today().strftime("%Y-%m-%d"))
-		df.to_csv('current_data.csv')	
+		df.to_csv('./data/current_data.csv')	
 
 		self.ichimoku(df)
 
