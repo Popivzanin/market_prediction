@@ -3,7 +3,7 @@ import talib as tb
 
 def preprocess(df):
 	df = features(df)
-	df = df.drop(["Open", "High", "Low", "Close", "Volume", "Adj Close"], axis=1,).dropna()
+	df = df.drop(["Open", "High", "Low", "Close", "Volume", "Adj Close"], axis=1).dropna()
 	return df
 
 def features(data):
